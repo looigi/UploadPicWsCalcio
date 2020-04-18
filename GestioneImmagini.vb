@@ -389,37 +389,46 @@ Public Class GestioneImmagini
 		End Try
 	End Sub
 
-	Public Sub Ridimensiona(Path As String, Path2 As String, Larghezza As Integer, Altezza As Integer, Optional Format As ImageFormat = Nothing)
+	Public Sub Ridimensiona(gf As GestioneFilesDirectory, ScriveLog As String, Path As String, Path2 As String, Larghezza As Integer, Altezza As Integer, Optional Format As ImageFormat = Nothing)
 		'Try
 		Dim myEncoder As System.Drawing.Imaging.Encoder
-			Dim myEncoderParameters As New Imaging.EncoderParameters(1)
-			Dim img2 As Bitmap
-			Dim ImmaginePiccola22 As Image
-			Dim jgpEncoder2 As Imaging.ImageCodecInfo
-			Dim myEncoder2 As System.Drawing.Imaging.Encoder
-			Dim myEncoderParameters2 As New Imaging.EncoderParameters(1)
+		Dim myEncoderParameters As New Imaging.EncoderParameters(1)
+		Dim img2 As Bitmap
+		Dim ImmaginePiccola22 As Image
+		Dim jgpEncoder2 As Imaging.ImageCodecInfo
+		Dim myEncoder2 As System.Drawing.Imaging.Encoder
+		Dim myEncoderParameters2 As New Imaging.EncoderParameters(1)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1...")
+		End If
 
-			img2 = New Bitmap(Path)
-			ImmaginePiccola22 = New Bitmap(img2, Val(Larghezza), Val(Altezza))
-			img2.Dispose()
-			img2 = Nothing
+		img2 = New Bitmap(Path)
+		ImmaginePiccola22 = New Bitmap(img2, Val(Larghezza), Val(Altezza))
+		img2.Dispose()
+		img2 = Nothing
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 2...")
+		End If
 
-			myEncoder = System.Drawing.Imaging.Encoder.Quality
-			If Format Is Nothing Then
-				jgpEncoder2 = GetEncoder(Imaging.ImageFormat.Jpeg)
-			Else
-				jgpEncoder2 = GetEncoder(Format)
-			End If
-			myEncoder2 = System.Drawing.Imaging.Encoder.Quality
-			Dim myEncoderParameter2 As New Imaging.EncoderParameter(myEncoder, 97)
-			myEncoderParameters2.Param(0) = myEncoderParameter2
-			ImmaginePiccola22.Save(Path2, jgpEncoder2, myEncoderParameters2)
+		myEncoder = System.Drawing.Imaging.Encoder.Quality
+		If Format Is Nothing Then
+			jgpEncoder2 = GetEncoder(Imaging.ImageFormat.Jpeg)
+		Else
+			jgpEncoder2 = GetEncoder(Format)
+		End If
+		myEncoder2 = System.Drawing.Imaging.Encoder.Quality
+		Dim myEncoderParameter2 As New Imaging.EncoderParameter(myEncoder, 97)
+		myEncoderParameters2.Param(0) = myEncoderParameter2
+		ImmaginePiccola22.Save(Path2, jgpEncoder2, myEncoderParameters2)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 3...")
+		End If
 
-			ImmaginePiccola22.Dispose()
+		ImmaginePiccola22.Dispose()
 
-			ImmaginePiccola22 = Nothing
-			jgpEncoder2 = Nothing
-			myEncoderParameter2 = Nothing
+		ImmaginePiccola22 = Nothing
+		jgpEncoder2 = Nothing
+		myEncoderParameter2 = Nothing
 		'Catch ex As Exception
 
 		'End Try
@@ -498,22 +507,31 @@ Public Class GestioneImmagini
 
 	End Function
 
-	Public Sub RidimensionaEArrotondaIcona(ByVal PercorsoImmagine As String, PercorsoOutput As String)
+	Public Sub RidimensionaEArrotondaIcona(gf As GestioneFilesDirectory, ScriveLog As String, ByVal PercorsoImmagine As String, PercorsoOutput As String)
 		Dim bm As Bitmap
 		Dim originalX As Integer
 		Dim originalY As Integer
 
 		'carica immagine originale
 		bm = New Bitmap(PercorsoImmagine)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 1...")
+		End If
 
 		originalX = bm.Width
 		originalY = bm.Height
 
 		Dim thumb As New Bitmap(originalX, originalY)
 		Dim g As Graphics = Graphics.FromImage(thumb)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 2...")
+		End If
 
 		g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
 		g.DrawImage(bm, New Rectangle(0, 0, originalX, originalY), New Rectangle(0, 0, bm.Width, bm.Height), GraphicsUnit.Pixel)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 3...")
+		End If
 
 		Dim r As System.Drawing.Rectangle
 		Dim s As System.Drawing.Size
@@ -532,6 +550,9 @@ Public Class GestioneImmagini
 			r.Size = s
 			g.DrawEllipse(coloreRosso, r)
 		Next
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 4...")
+		End If
 
 		Dim dimeFine As Integer = 238
 		r.X = (originalX / 2) - (dimeFine / 2)
@@ -548,6 +569,9 @@ Public Class GestioneImmagini
 		s.Height = dimeFine
 		r.Size = s
 		g.DrawEllipse(coloreGrigio, r)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 5...")
+		End If
 
 		Dim InizioY As Integer = -1
 		Dim InizioX As Integer = -1
@@ -568,6 +592,9 @@ Public Class GestioneImmagini
 				Exit For
 			End If
 		Next
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 6...")
+		End If
 
 		For i As Integer = originalX - 1 To 1 Step -1
 			For k As Integer = originalY - 1 To 1 Step -1
@@ -582,6 +609,9 @@ Public Class GestioneImmagini
 				Exit For
 			End If
 		Next
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 7...")
+		End If
 
 		For i As Integer = 1 To originalY - 1
 			For k As Integer = 1 To originalX - 1
@@ -610,6 +640,9 @@ Public Class GestioneImmagini
 				Exit For
 			End If
 		Next
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 8...")
+		End If
 
 		Dim nDimeX As Integer = FineX - InizioX
 		Dim nDimeY As Integer = FineY - InizioY
@@ -623,6 +656,9 @@ Public Class GestioneImmagini
 		Dim g2 As Graphics = Graphics.FromImage(bmpAppoggio)
 
 		g2.DrawImage(thumb, 0, 0, r, GraphicsUnit.Pixel)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 9...")
+		End If
 
 		thumb = bmpAppoggio
 		g2.Dispose()
@@ -630,6 +666,9 @@ Public Class GestioneImmagini
 		g.Dispose()
 
 		thumb.MakeTransparent(Color.Red)
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 10...")
+		End If
 
 		Try
 			Kill(PercorsoOutput)
@@ -640,6 +679,9 @@ Public Class GestioneImmagini
 		thumb.Save(PercorsoOutput, System.Drawing.Imaging.ImageFormat.Png)
 		bm.Dispose()
 		thumb.Dispose()
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 11...")
+		End If
 	End Sub
 
 	Public Function RuotaFoto(Nome As String, Angolo As Single) As String
