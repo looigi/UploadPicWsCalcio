@@ -13,6 +13,7 @@ Public Class _Default
 		Dim Arrotonda As String = ""
 		Dim NomeSquadra As String = ""
 		Dim ScriveLog As String = ""
+		Dim Allegato As String = ""
 
 		If Not String.IsNullOrEmpty(Request.Form("tipologia")) Then
 			vTipologia = Request.Form("tipologia")
@@ -32,6 +33,9 @@ Public Class _Default
 		If Not String.IsNullOrEmpty(Request.Form("scrivelog")) Then
 			ScriveLog = Request.Form("scrivelog")
 		End If
+		If Not String.IsNullOrEmpty(Request.Form("allegato")) Then
+			Allegato = Request.Form("allegato")
+		End If
 
 		Dim gf As New GestioneFilesDirectory
 		Dim Percorsi As String = gf.LeggeFileIntero(Server.MapPath(".") & "\PercorsoImmagini.txt")
@@ -44,116 +48,145 @@ Public Class _Default
 		If Strings.Right(FilePathLogs, 1) = "\" Then
 			FilePathLogs = Mid(FilePathLogs, 1, FilePathLogs.Length - 1)
 		End If
-
-		If ScriveLog = "SI" Then
-			gf.CreaDirectoryDaPercorso(FilePathLogs & "\")
-			gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\Log.txt")
+		Dim FilePathAllegati As String = Paths(2)
+		If Strings.Right(FilePathAllegati, 1) = "\" Then
+			FilePathAllegati = Mid(FilePathAllegati, 1, FilePathLogs.Length - 1)
 		End If
-		Dim Cosa As String = Now & Chr(13) & Chr(10)
-		Cosa &= "---------------------------------" & Chr(13) & Chr(10)
-		Cosa &= "Tipologia: " & vTipologia & Chr(13) & Chr(10)
-		Cosa &= "Nome File: " & vNomeFile & Chr(13) & Chr(10)
-		Cosa &= "Cartella: " & vCartella & Chr(13) & Chr(10)
-		Cosa &= "Arrotonda: " & Arrotonda & Chr(13) & Chr(10)
-		Cosa &= "Nome Squadra: " & NomeSquadra & Chr(13) & Chr(10)
-		If ScriveLog = "SI" Then
-			gf.ScriveTestoSuFileAperto(RitornaDataOra() & Cosa)
-		End If
-		' Response.End()
 
-		Dim MyFileCollection As HttpFileCollection = Request.Files
-
-		If MyFileCollection.Count > 0 Then
-			' MyFileCollection(0).SaveAs("C:\BackupLog\imm.jpg")
-
-			Dim NomeFile As String
-			Dim Contatore As Integer = 0
-			Dim Altro As String = ""
-
-			If vCartella <> "" Then
-				Altro = vCartella & "\"
-			End If
-
-			NomeFile = vTipologia & "\" & Altro & vNomeFile
-
-			If NomeSquadra <> "" Then
-				If Not NomeFile.StartsWith("\") Then
-					NomeFile = "\" & NomeFile
-				End If
-				NomeFile = NomeSquadra & "\" & NomeFile
-			End If
-
-			NomeFile = FilePathImmagine & "\" & NomeFile
-			NomeFile = NomeFile.Replace("\\", "\")
-
-			NomeFile = NomeFile.Replace("\Allenatori\Allenatori\", "\Allenatori\")
-			NomeFile = NomeFile.Replace("\Arbitri\Arbitri\", "\Arbitri\")
-			NomeFile = NomeFile.Replace("\Avversari\Avversari\", "\Avversari\")
-			NomeFile = NomeFile.Replace("\Categorie\Categorie\", "\Categorie\")
-			NomeFile = NomeFile.Replace("\Dirigenti\Dirigenti\", "\Dirigenti\")
-			NomeFile = NomeFile.Replace("\Giocatori\Giocatori\", "\Giocatori\")
-
+		Try
 			If ScriveLog = "SI" Then
-				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Completo: " & NomeFile)
+				gf.CreaDirectoryDaPercorso(FilePathLogs & "\")
+				gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\Log.txt")
 			End If
-
-			' Dim gf As New GestioneFilesDirectory
-			gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
-
-			MyFileCollection(0).SaveAs(NomeFile)
+			Dim Cosa As String = Now & Chr(13) & Chr(10)
+			Cosa &= "---------------------------------" & Chr(13) & Chr(10)
+			Cosa &= "Allegato: " & Allegato & Chr(13) & Chr(10)
+			Cosa &= "Tipologia: " & vTipologia & Chr(13) & Chr(10)
+			Cosa &= "Nome File: " & vNomeFile & Chr(13) & Chr(10)
+			Cosa &= "Cartella: " & vCartella & Chr(13) & Chr(10)
+			Cosa &= "Arrotonda: " & Arrotonda & Chr(13) & Chr(10)
+			Cosa &= "Nome Squadra: " & NomeSquadra & Chr(13) & Chr(10)
 			If ScriveLog = "SI" Then
-				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato")
+				gf.ScriveTestoSuFileAperto(RitornaDataOra() & Cosa)
 			End If
+			' Response.End()
 
-			If Arrotonda = "SI" Then
-				If ScriveLog = "SI" Then
-					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Inizio...")
+			Dim MyFileCollection As HttpFileCollection = Request.Files
+
+			If MyFileCollection.Count > 0 Then
+				' MyFileCollection(0).SaveAs("C:\BackupLog\imm.jpg")
+
+				If Allegato = "" Or Allegato = "NO" Then
+					' ALLEGATO NO
+
+					Dim NomeFile As String
+					Dim Contatore As Integer = 0
+					Dim Altro As String = ""
+
+					If vCartella <> "" Then
+						Altro = vCartella & "\"
+					End If
+
+					NomeFile = vTipologia & "\" & Altro & vNomeFile
+
+					If NomeSquadra <> "" Then
+						If Not NomeFile.StartsWith("\") Then
+							NomeFile = "\" & NomeFile
+						End If
+						NomeFile = NomeSquadra & "\" & NomeFile
+					End If
+
+					NomeFile = FilePathImmagine & "\" & NomeFile
+					NomeFile = NomeFile.Replace("\\", "\")
+
+					NomeFile = NomeFile.Replace("\Allenatori\Allenatori\", "\Allenatori\")
+					NomeFile = NomeFile.Replace("\Arbitri\Arbitri\", "\Arbitri\")
+					NomeFile = NomeFile.Replace("\Avversari\Avversari\", "\Avversari\")
+					NomeFile = NomeFile.Replace("\Categorie\Categorie\", "\Categorie\")
+					NomeFile = NomeFile.Replace("\Dirigenti\Dirigenti\", "\Dirigenti\")
+					NomeFile = NomeFile.Replace("\Giocatori\Giocatori\", "\Giocatori\")
+
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Completo: " & NomeFile)
+					End If
+
+					' Dim gf As New GestioneFilesDirectory
+					gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
+
+					MyFileCollection(0).SaveAs(NomeFile)
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato")
+					End If
+
+					If Arrotonda = "SI" Then
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Inizio...")
+						End If
+
+						Dim gi As New GestioneImmagini
+						Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
+						If Not pathFile.EndsWith("\") Then
+							pathFile &= "\"
+						End If
+						NomeFile = gf.TornaNomeFileDaPath(NomeFile)
+
+						'gf.ApreFileDiTestoPerScrittura(pathFile & "log.txt")
+						'gf.ScriveTestoSuFileAperto(ritornadataora & pathFile)
+						'gf.ScriveTestoSuFileAperto(ritornadataora & NomeFile)
+						'gf.ScriveTestoSuFileAperto(ritornadataora & "Ridimensiona")
+
+						gi.Ridimensiona(gf, ScriveLog, pathFile & NomeFile, pathFile & "Appoggio.png", 255, 255)
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensionata...")
+						End If
+
+						'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file")
+						gf.EliminaFileFisico(pathFile & NomeFile)
+
+						'gf.ScriveTestoSuFileAperto(ritornadataora & "Arrotonda")
+						gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & NomeFile)
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata...")
+						End If
+
+						'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file di appoggio")
+						gf.EliminaFileFisico(pathFile & "Appoggio.png")
+
+						'gf.ChiudeFileDiTestoDopoScrittura()
+
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Fine...")
+						End If
+						gi = Nothing
+
+					End If
+				Else
+					' ALLEGATO SI
+					Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
+					gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
+					End If
+
+					MyFileCollection(0).SaveAs(NomeAllegato)
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+					End If
 				End If
-
-				Dim gi As New GestioneImmagini
-				Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
-				If Not pathFile.EndsWith("\") Then
-					pathFile &= "\"
-				End If
-				NomeFile = gf.TornaNomeFileDaPath(NomeFile)
-
-				'gf.ApreFileDiTestoPerScrittura(pathFile & "log.txt")
-				'gf.ScriveTestoSuFileAperto(ritornadataora & pathFile)
-				'gf.ScriveTestoSuFileAperto(ritornadataora & NomeFile)
-				'gf.ScriveTestoSuFileAperto(ritornadataora & "Ridimensiona")
-
-				gi.Ridimensiona(gf, ScriveLog, pathFile & NomeFile, pathFile & "Appoggio.png", 255, 255)
-				If ScriveLog = "SI" Then
-					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensionata...")
-				End If
-
-				'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file")
-				gf.EliminaFileFisico(pathFile & NomeFile)
-
-				'gf.ScriveTestoSuFileAperto(ritornadataora & "Arrotonda")
-				gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & NomeFile)
-				If ScriveLog = "SI" Then
-					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata...")
-				End If
-
-				'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file di appoggio")
-				gf.EliminaFileFisico(pathFile & "Appoggio.png")
-
-				'gf.ChiudeFileDiTestoDopoScrittura()
-
-				If ScriveLog = "SI" Then
-					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Fine...")
-				End If
-				gi = Nothing
 			End If
 			If ScriveLog = "SI" Then
 				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
 				gf.ChiudeFileDiTestoDopoScrittura()
 			End If
-			gf = Nothing
+		Catch ex As Exception
+			If ScriveLog = "SI" Then
+				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "ERRORE: " & ex.Message & Chr(13) & Chr(10) & "---------------------------------" & Chr(13) & Chr(10))
+				gf.ChiudeFileDiTestoDopoScrittura()
+			End If
+		End Try
 
-		End If
-    End Sub
+		gf = Nothing
+	End Sub
 
 	Protected Sub btnCOnverte_Click(sender As Object, e As EventArgs) Handles btnCOnverte.Click
 		Dim pathLettura As String = System.Configuration.ConfigurationManager.AppSettings("pathImm").ToString()
