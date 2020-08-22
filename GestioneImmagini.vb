@@ -403,7 +403,17 @@ Public Class GestioneImmagini
 		End If
 
 		img2 = New Bitmap(Path)
-		ImmaginePiccola22 = New Bitmap(img2, Val(Larghezza), Val(Altezza))
+		Dim dimeX As Single = Val(Larghezza) / img2.Width
+		Dim dimeY As Single = Val(Altezza) / img2.Height
+		Dim Scala As Single
+		If dimeX > dimeY Then
+			Scala = dimeY
+		Else
+			Scala = dimeX
+		End If
+		Dim Larghezza2 As Integer = Int(img2.Width * Scala)
+		Dim Altezza2 As Integer = Int(img2.Height * Scala)
+		ImmaginePiccola22 = New Bitmap(img2, Val(Larghezza2), Val(Altezza2))
 		img2.Dispose()
 		img2 = Nothing
 		If ScriveLog = "SI" Then
@@ -512,14 +522,26 @@ Public Class GestioneImmagini
 		Dim originalX As Integer
 		Dim originalY As Integer
 
+		Dim x As String = RitornaDimensioneImmagine(PercorsoImmagine)
+		Dim xx() As String = x.Split("x")
+		Dim Massimo As Integer
+		If Val(xx(0)) < Val(xx(1)) Then
+			Massimo = Val(xx(0))
+		Else
+			Massimo = Val(xx(1))
+		End If
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Dimensioni: " & x & " -> Massimo: " & Massimo)
+		End If
+
 		'carica immagine originale
 		bm = New Bitmap(PercorsoImmagine)
 		If ScriveLog = "SI" Then
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 1...")
 		End If
 
-		originalX = bm.Width
-		originalY = bm.Height
+		originalX = 255 ' bm.Width
+		originalY = 255 ' bm.Height
 
 		Dim thumb As New Bitmap(originalX, originalY)
 		Dim g As Graphics = Graphics.FromImage(thumb)
@@ -542,7 +564,7 @@ Public Class GestioneImmagini
 		coloreGrigio.Width = 3
 		coloreNero.Width = 4
 
-		For dimeX = originalX - 15 To originalX * 2
+		For dimeX = originalX - 15 To 500 ' originalX * 2
 			r.X = (originalX / 2) - (dimeX / 2)
 			r.Y = (originalY / 2) - (dimeX / 2)
 			s.Width = dimeX
@@ -572,6 +594,16 @@ Public Class GestioneImmagini
 		If ScriveLog = "SI" Then
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 5...")
 		End If
+
+
+		For dimeX = originalX * 2 To Massimo
+			r.X = (originalX / 2) - (dimeX / 2)
+			r.Y = (originalY / 2) - (dimeX / 2)
+			s.Width = dimeX
+			s.Height = dimeX
+			r.Size = s
+			g.DrawEllipse(coloreRosso, r)
+		Next
 
 		Dim InizioY As Integer = -1
 		Dim InizioX As Integer = -1

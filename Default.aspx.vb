@@ -135,7 +135,11 @@ Public Class _Default
 						'gf.ScriveTestoSuFileAperto(ritornadataora & NomeFile)
 						'gf.ScriveTestoSuFileAperto(ritornadataora & "Ridimensiona")
 
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine.")
+						End If
 						gi.Ridimensiona(gf, ScriveLog, pathFile & NomeFile, pathFile & "Appoggio.png", 255, 255)
+						'File.Copy(pathFile & "Appoggio.png", pathFile & "Ridimensionata.png")
 						If ScriveLog = "SI" Then
 							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensionata...")
 						End If
@@ -144,13 +148,33 @@ Public Class _Default
 						gf.EliminaFileFisico(pathFile & NomeFile)
 
 						'gf.ScriveTestoSuFileAperto(ritornadataora & "Arrotonda")
-						gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & NomeFile)
+						gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & "Appoggio2.png")
+
+						'File.Copy(pathFile & "Appoggio.png", pathFile & "Arrotondata.png")
 						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata...")
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata..." & pathFile & "Appoggio2.png")
+						End If
+
+						Dim nomeFileFinale As String = NomeFile
+						Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
+						nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
+
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine:" & pathFile & "Appoggio2.png  -> " & pathFile & nomeFileFinale)
+						End If
+
+						Dim c As New CriptaFiles
+						File.Delete(pathFile & nomeFileFinale)
+						Dim ret As String = c.EncryptFile("WPippoBaudo227!", pathFile & "Appoggio2.png", pathFile & nomeFileFinale)
+
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine: " & ret)
 						End If
 
 						'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file di appoggio")
+						''gf.EliminaFileFisico(pathFile & NomeFile)
 						gf.EliminaFileFisico(pathFile & "Appoggio.png")
+						gf.EliminaFileFisico(pathFile & "Appoggio2.png")
 
 						'gf.ChiudeFileDiTestoDopoScrittura()
 
@@ -158,7 +182,15 @@ Public Class _Default
 							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Fine...")
 						End If
 						gi = Nothing
+					Else
+						Dim nomeFileFinale As String = NomeFile
+						Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
+						nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
 
+						Dim c As New CriptaFiles
+						c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
+
+						File.Delete(NomeFile)
 					End If
 				Else
 					' ALLEGATO SI
