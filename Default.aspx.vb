@@ -56,7 +56,7 @@ Public Class _Default
 		Try
 			If ScriveLog = "SI" Then
 				gf.CreaDirectoryDaPercorso(FilePathLogs & "\")
-				gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\Log.txt")
+				gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\Log_" & NomeSquadra & ".txt")
 			End If
 			Dim Cosa As String = Now & Chr(13) & Chr(10)
 			Cosa &= "---------------------------------" & Chr(13) & Chr(10)
@@ -183,14 +183,28 @@ Public Class _Default
 						End If
 						gi = Nothing
 					Else
-						Dim nomeFileFinale As String = NomeFile
-						Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
-						nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "NON arrotondo l'immagine")
+						End If
 
-						Dim c As New CriptaFiles
-						c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
+						If NomeFile.ToUpper.Contains(".JPG") Or NomeFile.ToUpper.Contains(".JPEG") Or NomeFile.ToUpper.Contains(".PNG") Then
+							Dim nomeFileFinale As String = NomeFile
+							Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
+							nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
 
-						File.Delete(NomeFile)
+							If ScriveLog = "SI" Then
+								gf.ScriveTestoSuFileAperto(RitornaDataOra() & "crypto immagine: " & NomeFile & " -> " & nomeFileFinale)
+							End If
+
+							Dim c As New CriptaFiles
+							c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
+
+							File.Delete(NomeFile)
+
+							If ScriveLog = "SI" Then
+								gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Convertita")
+							End If
+						End If
 					End If
 				Else
 					' ALLEGATO SI
