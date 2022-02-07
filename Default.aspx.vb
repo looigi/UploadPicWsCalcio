@@ -41,6 +41,7 @@ Public Class _Default
 		Dim Percorsi As String = gf.LeggeFileIntero(Server.MapPath(".") & "\PercorsoImmagini.txt")
 		Dim Paths() As String = Percorsi.Split(";")
 		Dim FilePathImmagine As String = Paths(0)
+		TipoDB = Paths(4)
 		If Strings.Right(FilePathImmagine, 1) = "\" Then
 			FilePathImmagine = Mid(FilePathImmagine, 1, FilePathImmagine.Length - 1)
 		End If
@@ -51,6 +52,10 @@ Public Class _Default
 		Dim FilePathAllegati As String = Paths(2)
 		If Strings.Right(FilePathAllegati, 1) = "\" Then
 			FilePathAllegati = Mid(FilePathAllegati, 1, FilePathLogs.Length - 1)
+		End If
+		Dim FilePathWS As String = Paths(3)
+		If Strings.Right(FilePathWS, 1) = "\" Then
+			FilePathWS = Mid(FilePathWS, 1, FilePathWS.Length - 1)
 		End If
 
 		Try
@@ -113,6 +118,11 @@ Public Class _Default
 					' Dim gf As New GestioneFilesDirectory
 					gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
 
+					If TipoDB <> "SQLSERVER" Then
+						NomeFile = NomeFile.Replace("\", "/")
+						NomeFile = NomeFile.Replace("//", "/")
+					End If
+
 					MyFileCollection(0).SaveAs(NomeFile)
 					If ScriveLog = "SI" Then
 						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato")
@@ -125,8 +135,14 @@ Public Class _Default
 
 						Dim gi As New GestioneImmagini
 						Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
-						If Not pathFile.EndsWith("\") Then
-							pathFile &= "\"
+						If TipoDB = "SQLSERVER" Then
+							If Not pathFile.EndsWith("\") Then
+								pathFile &= "\"
+							End If
+						Else
+							If Not pathFile.EndsWith("/") Then
+								pathFile &= "/"
+							End If
 						End If
 						NomeFile = gf.TornaNomeFileDaPath(NomeFile)
 
@@ -164,8 +180,10 @@ Public Class _Default
 						End If
 
 						Dim c As New CriptaFiles
-						File.Delete(pathFile & nomeFileFinale)
-						Dim ret As String = c.EncryptFile("WPippoBaudo227!", pathFile & "Appoggio2.png", pathFile & nomeFileFinale)
+						Dim pathFinale As String = pathFile & nomeFileFinale
+
+						gf.EliminaFileFisico(pathFinale)
+						Dim ret As String = c.EncryptFile("WPippoBaudo227!", pathFile & "Appoggio2.png", pathFinale)
 
 						If ScriveLog = "SI" Then
 							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine: " & ret)
@@ -199,7 +217,7 @@ Public Class _Default
 							Dim c As New CriptaFiles
 							c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
 
-							File.Delete(NomeFile)
+							gf.EliminaFileFisico(NomeFile)
 
 							If ScriveLog = "SI" Then
 								gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Convertita")
@@ -208,15 +226,38 @@ Public Class _Default
 					End If
 				Else
 					' ALLEGATO SI
-					Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
-					gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
-					If ScriveLog = "SI" Then
-						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
-					End If
+					If NomeSquadra = "Base" Then
+						Dim NomeAllegato As String = FilePathWS & "\Scheletri\" & vNomeFile
+						gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
+						End If
 
-					MyFileCollection(0).SaveAs(NomeAllegato)
-					If ScriveLog = "SI" Then
-						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+						If TipoDB = "SQLSERVER" Then
+							NomeAllegato = NomeAllegato.Replace("\", "/")
+							NomeAllegato = NomeAllegato.Replace("//", "/")
+						End If
+						MyFileCollection(0).SaveAs(NomeAllegato)
+
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+						End If
+					Else
+						Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
+						gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
+						End If
+
+						If TipoDB = "SQLSERVER" Then
+							NomeAllegato = NomeAllegato.Replace("\", "/")
+							NomeAllegato = NomeAllegato.Replace("//", "/")
+						End If
+						MyFileCollection(0).SaveAs(NomeAllegato)
+
+						If ScriveLog = "SI" Then
+							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+						End If
 					End If
 				End If
 			End If

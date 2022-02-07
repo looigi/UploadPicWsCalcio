@@ -19,6 +19,14 @@ Public Class CriptaFiles
 		encrypt As Boolean) As String
 		Dim Ritorno As String = ""
 
+		If TipoDB <> "SQLSERVER" Then
+			in_file = in_file.Replace("\", "/")
+			in_file = in_file.Replace("//", "/")
+
+			out_file = out_file.Replace("\", "/")
+			out_file = out_file.Replace("//", "/")
+		End If
+
 		' Create input and output file streams.
 		Using in_stream As New FileStream(in_file,
 			FileMode.Open, FileAccess.Read)

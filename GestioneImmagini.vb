@@ -402,6 +402,11 @@ Public Class GestioneImmagini
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1...")
 		End If
 
+		If TipoDB <> "SQLSERVER" Then
+			Path = Path.Replace("\", "/")
+			Path = Path.Replace("//", "/")
+		End If
+
 		img2 = New Bitmap(Path)
 		Dim dimeX As Single = Val(Larghezza) / img2.Width
 		Dim dimeY As Single = Val(Altezza) / img2.Height
@@ -429,6 +434,12 @@ Public Class GestioneImmagini
 		myEncoder2 = System.Drawing.Imaging.Encoder.Quality
 		Dim myEncoderParameter2 As New Imaging.EncoderParameter(myEncoder, 97)
 		myEncoderParameters2.Param(0) = myEncoderParameter2
+
+		If TipoDB <> "SQLSERVER" Then
+			Path2 = Path2.Replace("\", "/")
+			Path2 = Path2.Replace("//", "/")
+		End If
+
 		ImmaginePiccola22.Save(Path2, jgpEncoder2, myEncoderParameters2)
 		If ScriveLog = "SI" Then
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 3...")
@@ -521,6 +532,11 @@ Public Class GestioneImmagini
 		Dim bm As Bitmap
 		Dim originalX As Integer
 		Dim originalY As Integer
+
+		If TipoDB <> "SQLSERVER" Then
+			PercorsoImmagine = PercorsoImmagine.Replace("\", "/")
+			PercorsoImmagine = PercorsoImmagine.Replace("//", "/")
+		End If
 
 		Dim x As String = RitornaDimensioneImmagine(PercorsoImmagine)
 		Dim xx() As String = x.Split("x")
@@ -700,6 +716,11 @@ Public Class GestioneImmagini
 		thumb.MakeTransparent(Color.Red)
 		If ScriveLog = "SI" Then
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 10...")
+		End If
+
+		If TipoDB <> "SQLSERVER" Then
+			PercorsoOutput = PercorsoOutput.Replace("\", "/")
+			PercorsoOutput = PercorsoOutput.Replace("//", "/")
 		End If
 
 		Try
