@@ -399,7 +399,7 @@ Public Class GestioneImmagini
 		Dim myEncoder2 As System.Drawing.Imaging.Encoder
 		Dim myEncoderParameters2 As New Imaging.EncoderParameters(1)
 		If ScriveLog = "SI" Then
-			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1...")
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1... Path: " & Path)
 		End If
 
 		If TipoDB <> "SQLSERVER" Then
@@ -408,21 +408,32 @@ Public Class GestioneImmagini
 		End If
 
 		img2 = New Bitmap(Path)
-		Dim dimeX As Single = Val(Larghezza) / img2.Width
-		Dim dimeY As Single = Val(Altezza) / img2.Height
+		Dim x As Integer = String.Format(Val(img2.Width.ToString), "0000")
+		Dim y As Integer = String.Format(Val(img2.Height.ToString), "0000")
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1.5... Dimensioni: " & x & " x " & y & " - Desiderato: " & Larghezza & " x " & Altezza)
+		End If
+		Dim dimeX As Single = Larghezza / x
+		Dim dimeY As Single = Altezza / y
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1.7... Dimex/y: " & dimeX & " x " & dimeY)
+		End If
 		Dim Scala As Single
 		If dimeX > dimeY Then
 			Scala = dimeY
 		Else
 			Scala = dimeX
 		End If
-		Dim Larghezza2 As Integer = Int(img2.Width * Scala)
-		Dim Altezza2 As Integer = Int(img2.Height * Scala)
-		ImmaginePiccola22 = New Bitmap(img2, Val(Larghezza2), Val(Altezza2))
+		If ScriveLog = "SI" Then
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1.7... Scala: " & Scala)
+		End If
+		Dim Larghezza2 As Integer = Int(x * Scala)
+		Dim Altezza2 As Integer = Int(x * Scala)
+		ImmaginePiccola22 = New Bitmap(img2, Larghezza2, Altezza2)
 		img2.Dispose()
 		img2 = Nothing
 		If ScriveLog = "SI" Then
-			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 2...")
+			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 2... Nuove dimensioni: " & Larghezza2 & " x " & Altezza2)
 		End If
 
 		myEncoder = System.Drawing.Imaging.Encoder.Quality

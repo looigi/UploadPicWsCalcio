@@ -37,6 +37,9 @@ Public Class _Default
 			Allegato = Request.Form("allegato")
 		End If
 
+		'Response.Write(vTipologia & ";" & vNomeFile & ";" & vCartella & ";" & Arrotonda & ";" & NomeSquadra & ";" & ScriveLog & ";" & Allegato)
+		'Response.End()
+
 		Dim gf As New GestioneFilesDirectory
 		Dim Percorsi As String = gf.LeggeFileIntero(Server.MapPath(".") & "\PercorsoImmagini.txt")
 		Dim Paths() As String = Percorsi.Split(";")
@@ -124,8 +127,10 @@ Public Class _Default
 					End If
 
 					MyFileCollection(0).SaveAs(NomeFile)
+					gf.ImpostaAttributiFile(NomeFile, FileAttributes.Normal)
+
 					If ScriveLog = "SI" Then
-						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato")
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato e impostati permessi")
 					End If
 
 					If Arrotonda = "SI" Then
