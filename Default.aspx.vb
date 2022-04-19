@@ -44,7 +44,7 @@ Public Class _Default
 		Dim Percorsi As String = gf.LeggeFileIntero(Server.MapPath(".") & "\PercorsoImmagini.txt")
 		Dim Paths() As String = Percorsi.Split(";")
 		Dim FilePathImmagine As String = Paths(0)
-		TipoDB = Paths(4)
+		TipoDB = Paths(4).Replace(vbCrLf, "")
 		If Strings.Right(FilePathImmagine, 1) = "\" Then
 			FilePathImmagine = Mid(FilePathImmagine, 1, FilePathImmagine.Length - 1)
 		End If
@@ -68,6 +68,7 @@ Public Class _Default
 			End If
 			Dim Cosa As String = Now & Chr(13) & Chr(10)
 			Cosa &= "---------------------------------" & Chr(13) & Chr(10)
+			Cosa &= "Tipo DB: " & TipoDB & Chr(13) & Chr(10)
 			Cosa &= "Allegato: " & Allegato & Chr(13) & Chr(10)
 			Cosa &= "Tipologia: " & vTipologia & Chr(13) & Chr(10)
 			Cosa &= "Nome File: " & vNomeFile & Chr(13) & Chr(10)
@@ -82,190 +83,238 @@ Public Class _Default
 			Dim MyFileCollection As HttpFileCollection = Request.Files
 
 			If MyFileCollection.Count > 0 Then
-				' MyFileCollection(0).SaveAs("C:\BackupLog\imm.jpg")
-
-				If Allegato = "" Or Allegato = "NO" Then
-					' ALLEGATO NO
-
-					Dim NomeFile As String
-					Dim Contatore As Integer = 0
-					Dim Altro As String = ""
-
-					If vCartella <> "" Then
-						Altro = vCartella & "\"
-					End If
-
-					NomeFile = vTipologia & "\" & Altro & vNomeFile
-
-					If NomeSquadra <> "" Then
-						If Not NomeFile.StartsWith("\") Then
-							NomeFile = "\" & NomeFile
-						End If
-						NomeFile = NomeSquadra & "\" & NomeFile
-					End If
-
-					NomeFile = FilePathImmagine & "\" & NomeFile
-					NomeFile = NomeFile.Replace("\\", "\")
-
-					NomeFile = NomeFile.Replace("\Allenatori\Allenatori\", "\Allenatori\")
-					NomeFile = NomeFile.Replace("\Arbitri\Arbitri\", "\Arbitri\")
-					NomeFile = NomeFile.Replace("\Avversari\Avversari\", "\Avversari\")
-					NomeFile = NomeFile.Replace("\Categorie\Categorie\", "\Categorie\")
-					NomeFile = NomeFile.Replace("\Dirigenti\Dirigenti\", "\Dirigenti\")
-					NomeFile = NomeFile.Replace("\Giocatori\Giocatori\", "\Giocatori\")
-
-					If ScriveLog = "SI" Then
-						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Completo: " & NomeFile)
-					End If
-
-					' Dim gf As New GestioneFilesDirectory
-					gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
-
-					If TipoDB <> "SQLSERVER" Then
-						NomeFile = NomeFile.Replace("\", "/")
-						NomeFile = NomeFile.Replace("//", "/")
-					End If
-
-					MyFileCollection(0).SaveAs(NomeFile)
-					gf.ImpostaAttributiFile(NomeFile, FileAttributes.Normal)
-
-					If ScriveLog = "SI" Then
-						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato e impostati permessi")
-					End If
-
-					If Arrotonda = "SI" Then
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Inizio...")
-						End If
-
-						Dim gi As New GestioneImmagini
-						Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
-						If TipoDB = "SQLSERVER" Then
-							If Not pathFile.EndsWith("\") Then
-								pathFile &= "\"
-							End If
-						Else
-							If Not pathFile.EndsWith("/") Then
-								pathFile &= "/"
-							End If
-						End If
-						NomeFile = gf.TornaNomeFileDaPath(NomeFile)
-
-						'gf.ApreFileDiTestoPerScrittura(pathFile & "log.txt")
-						'gf.ScriveTestoSuFileAperto(ritornadataora & pathFile)
-						'gf.ScriveTestoSuFileAperto(ritornadataora & NomeFile)
-						'gf.ScriveTestoSuFileAperto(ritornadataora & "Ridimensiona")
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine.")
-						End If
-						gi.Ridimensiona(gf, ScriveLog, pathFile & NomeFile, pathFile & "Appoggio.png", 255, 255)
-						'File.Copy(pathFile & "Appoggio.png", pathFile & "Ridimensionata.png")
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensionata...")
-						End If
-
-						'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file")
-						gf.EliminaFileFisico(pathFile & NomeFile)
-
-						'gf.ScriveTestoSuFileAperto(ritornadataora & "Arrotonda")
-						gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & "Appoggio2.png")
-
-						'File.Copy(pathFile & "Appoggio.png", pathFile & "Arrotondata.png")
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata..." & pathFile & "Appoggio2.png")
-						End If
-
-						Dim nomeFileFinale As String = NomeFile
-						Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
-						nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine:" & pathFile & "Appoggio2.png  -> " & pathFile & nomeFileFinale)
-						End If
-
-						Dim c As New CriptaFiles
-						Dim pathFinale As String = pathFile & nomeFileFinale
-
-						gf.EliminaFileFisico(pathFinale)
-						Dim ret As String = c.EncryptFile("WPippoBaudo227!", pathFile & "Appoggio2.png", pathFinale)
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine: " & ret)
-						End If
-
-						'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file di appoggio")
-						''gf.EliminaFileFisico(pathFile & NomeFile)
-						gf.EliminaFileFisico(pathFile & "Appoggio.png")
-						gf.EliminaFileFisico(pathFile & "Appoggio2.png")
-
-						'gf.ChiudeFileDiTestoDopoScrittura()
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Fine...")
-						End If
-						gi = Nothing
-					Else
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "NON arrotondo l'immagine")
-						End If
-
-						If NomeFile.ToUpper.Contains(".JPG") Or NomeFile.ToUpper.Contains(".JPEG") Or NomeFile.ToUpper.Contains(".PNG") Then
-							Dim nomeFileFinale As String = NomeFile
-							Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
-							nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
-
-							If ScriveLog = "SI" Then
-								gf.ScriveTestoSuFileAperto(RitornaDataOra() & "crypto immagine: " & NomeFile & " -> " & nomeFileFinale)
-							End If
-
-							Dim c As New CriptaFiles
-							c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
-
-							gf.EliminaFileFisico(NomeFile)
-
-							If ScriveLog = "SI" Then
-								gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Convertita")
-							End If
-						End If
-					End If
+				Dim NomeFile As String = ""
+				If Allegato = True Or Allegato = "True" Then
+					NomeFile = vTipologia & "_" & vCartella & "_" & NomeSquadra & "_" & vNomeFile
 				Else
-					' ALLEGATO SI
-					If NomeSquadra = "Base" Then
-						Dim NomeAllegato As String = FilePathWS & "\Scheletri\" & vNomeFile
-						gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
-						End If
-
-						If TipoDB = "SQLSERVER" Then
-							NomeAllegato = NomeAllegato.Replace("\", "/")
-							NomeAllegato = NomeAllegato.Replace("//", "/")
-						End If
-						MyFileCollection(0).SaveAs(NomeAllegato)
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
-						End If
-					Else
-						Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
-						gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
-						End If
-
-						If TipoDB = "SQLSERVER" Then
-							NomeAllegato = NomeAllegato.Replace("\", "/")
-							NomeAllegato = NomeAllegato.Replace("//", "/")
-						End If
-						MyFileCollection(0).SaveAs(NomeAllegato)
-
-						If ScriveLog = "SI" Then
-							gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
-						End If
-					End If
+					NomeFile = Allegato & "_" & vTipologia & "_" & vCartella & "_" & NomeSquadra & "_" & vNomeFile
 				End If
+
+				Dim Path As String = Server.MapPath(".") & "\Appoggio\" & NomeFile
+				If TipoDB <> "SQLSERVER" Then
+					Path = Path.Replace("\", "/")
+					Path = Path.Replace("//", "/")
+					Path = Path.Replace("/\", "/")
+				End If
+
+				MyFileCollection(0).SaveAs(Path)
+				gf.ImpostaAttributiFile(Path, FileAttributes.Normal)
+
+				If Arrotonda = "SI" Then
+					Dim gi As New GestioneImmagini
+					Dim NomeFileArrotondato As String = Server.MapPath(".") & "\Appoggio\" & NomeFile & ".rsz"
+					Dim NomeFileArrotondatoRidim As String = Server.MapPath(".") & "\Appoggio\" & NomeFile & ".arr"
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Arrotondato: " & NomeFileArrotondato)
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Arrotondato Ridimensionato: " & NomeFileArrotondatoRidim)
+					End If
+
+					gi.Ridimensiona(gf, ScriveLog, Path, NomeFileArrotondato, 255, 255)
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Elimino file: " & Path)
+					End If
+					gf.EliminaFileFisico(Path)
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo file")
+					End If
+					gi.RidimensionaEArrotondaIcona(gf, ScriveLog, NomeFileArrotondato, NomeFileArrotondatoRidim)
+					If ScriveLog = "SI" Then
+						gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Elimino file arrotondato: " & NomeFileArrotondato)
+					End If
+					gf.EliminaFileFisico(NomeFileArrotondato)
+					gf.RinominaFile(NomeFileArrotondatoRidim, Path)
+				End If
+
+				txtRitorno.Text = "***DATI***" & Path & ";" & vNomeFile & "***FINE DATI***"
 			End If
+
+			'If MyFileCollection.Count > 0 Then
+			'	' MyFileCollection(0).SaveAs("C:\BackupLog\imm.jpg")
+
+			'	If Allegato = "" Or Allegato = "NO" Then
+			'		' ALLEGATO NO
+
+			'		Dim NomeFile As String
+			'		Dim Contatore As Integer = 0
+			'		Dim Altro As String = ""
+
+			'		If vCartella <> "" Then
+			'			Altro = vCartella & "\"
+			'		End If
+
+			'		NomeFile = vTipologia & "\" & Altro & vNomeFile
+
+			'		If NomeSquadra <> "" Then
+			'			If Not NomeFile.StartsWith("\") Then
+			'				NomeFile = "\" & NomeFile
+			'			End If
+			'			NomeFile = NomeSquadra & "\" & NomeFile
+			'		End If
+
+			'		NomeFile = FilePathImmagine & "\" & NomeFile
+			'		NomeFile = NomeFile.Replace("\\", "\")
+
+			'		NomeFile = NomeFile.Replace("\Allenatori\Allenatori\", "\Allenatori\")
+			'		NomeFile = NomeFile.Replace("\Arbitri\Arbitri\", "\Arbitri\")
+			'		NomeFile = NomeFile.Replace("\Avversari\Avversari\", "\Avversari\")
+			'		NomeFile = NomeFile.Replace("\Categorie\Categorie\", "\Categorie\")
+			'		NomeFile = NomeFile.Replace("\Dirigenti\Dirigenti\", "\Dirigenti\")
+			'		NomeFile = NomeFile.Replace("\Giocatori\Giocatori\", "\Giocatori\")
+
+			'		If ScriveLog = "SI" Then
+			'			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Nome File Completo: " & NomeFile)
+			'		End If
+
+			'		' Dim gf As New GestioneFilesDirectory
+			'		gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
+
+			'		If TipoDB <> "SQLSERVER" Then
+			'			NomeFile = NomeFile.Replace("\", "/")
+			'			NomeFile = NomeFile.Replace("//", "/")
+			'		End If
+
+			'		MyFileCollection(0).SaveAs(NomeFile)
+			'		gf.ImpostaAttributiFile(NomeFile, FileAttributes.Normal)
+
+			'		If ScriveLog = "SI" Then
+			'			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "File salvato e impostati permessi")
+			'		End If
+
+			'		If Arrotonda = "SI" Then
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Inizio...")
+			'			End If
+
+			'			Dim gi As New GestioneImmagini
+			'			Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
+			'			If TipoDB <> "SQLSERVER" Then
+			'				If Not pathFile.EndsWith("\") Then
+			'					pathFile &= "\"
+			'				End If
+			'			Else
+			'				If Not pathFile.EndsWith("/") Then
+			'					pathFile &= "/"
+			'				End If
+			'			End If
+			'			NomeFile = gf.TornaNomeFileDaPath(NomeFile)
+
+			'			'gf.ApreFileDiTestoPerScrittura(pathFile & "log.txt")
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & pathFile)
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & NomeFile)
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & "Ridimensiona")
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine.")
+			'			End If
+			'			gi.Ridimensiona(gf, ScriveLog, pathFile & NomeFile, pathFile & "Appoggio.png", 255, 255)
+			'			'File.Copy(pathFile & "Appoggio.png", pathFile & "Ridimensionata.png")
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensionata...")
+			'			End If
+
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file")
+			'			gf.EliminaFileFisico(pathFile & NomeFile)
+
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & "Arrotonda")
+			'			gi.RidimensionaEArrotondaIcona(gf, ScriveLog, pathFile & "Appoggio.png", pathFile & "Appoggio2.png")
+
+			'			'File.Copy(pathFile & "Appoggio.png", pathFile & "Arrotondata.png")
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotondata..." & pathFile & "Appoggio2.png")
+			'			End If
+
+			'			Dim nomeFileFinale As String = NomeFile
+			'			Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
+			'			nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine:" & pathFile & "Appoggio2.png  -> " & pathFile & nomeFileFinale)
+			'			End If
+
+			'			Dim c As New CriptaFiles
+			'			Dim pathFinale As String = pathFile & nomeFileFinale
+
+			'			gf.EliminaFileFisico(pathFinale)
+			'			Dim ret As String = c.EncryptFile("WPippoBaudo227!", pathFile & "Appoggio2.png", pathFinale)
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Cripto l'immagine: " & ret)
+			'			End If
+
+			'			'gf.ScriveTestoSuFileAperto(ritornadataora & "Elimina file di appoggio")
+			'			''gf.EliminaFileFisico(pathFile & NomeFile)
+			'			gf.EliminaFileFisico(pathFile & "Appoggio.png")
+			'			gf.EliminaFileFisico(pathFile & "Appoggio2.png")
+
+			'			'gf.ChiudeFileDiTestoDopoScrittura()
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Fine...")
+			'			End If
+			'			gi = Nothing
+			'		Else
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "NON arrotondo l'immagine")
+			'			End If
+
+			'			If NomeFile.ToUpper.Contains(".JPG") Or NomeFile.ToUpper.Contains(".JPEG") Or NomeFile.ToUpper.Contains(".PNG") Then
+			'				Dim nomeFileFinale As String = NomeFile
+			'				Dim este As String = gf.TornaEstensioneFileDaPath(nomeFileFinale)
+			'				nomeFileFinale = nomeFileFinale.Replace(este, ".kgb")
+
+			'				If ScriveLog = "SI" Then
+			'					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "crypto immagine: " & NomeFile & " -> " & nomeFileFinale)
+			'				End If
+
+			'				Dim c As New CriptaFiles
+			'				c.EncryptFile("WPippoBaudo227!", NomeFile, nomeFileFinale)
+
+			'				gf.EliminaFileFisico(NomeFile)
+
+			'				If ScriveLog = "SI" Then
+			'					gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Convertita")
+			'				End If
+			'			End If
+			'		End If
+			'	Else
+			'		' ALLEGATO SI
+			'		If NomeSquadra = "Base" Then
+			'			Dim NomeAllegato As String = FilePathWS & "\Scheletri\" & vNomeFile
+			'			If TipoDB <> "SQLSERVER" Then
+			'				NomeAllegato = NomeAllegato.Replace("\", "/")
+			'				NomeAllegato = NomeAllegato.Replace("//", "/")
+			'			End If
+
+			'			gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato squadra base: " & NomeAllegato & Chr(13) & Chr(10))
+			'			End If
+
+			'			MyFileCollection(0).SaveAs(NomeAllegato)
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+			'			End If
+			'		Else
+			'			Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
+			'			If TipoDB <> "SQLSERVER" Then
+			'				NomeAllegato = NomeAllegato.Replace("\", "/")
+			'				NomeAllegato = NomeAllegato.Replace("//", "/")
+			'			End If
+
+			'			gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeAllegato) & "\")
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Salvataggio allegato: " & NomeAllegato & Chr(13) & Chr(10))
+			'			End If
+
+			'			MyFileCollection(0).SaveAs(NomeAllegato)
+
+			'			If ScriveLog = "SI" Then
+			'				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
+			'			End If
+			'		End If
+			'	End If
+			'End If
 			If ScriveLog = "SI" Then
 				gf.ScriveTestoSuFileAperto(RitornaDataOra() & "---------------------------------" & Chr(13) & Chr(10))
 				gf.ChiudeFileDiTestoDopoScrittura()
@@ -280,26 +329,26 @@ Public Class _Default
 		gf = Nothing
 	End Sub
 
-	Protected Sub btnCOnverte_Click(sender As Object, e As EventArgs) Handles btnCOnverte.Click
-		Dim pathLettura As String = System.Configuration.ConfigurationManager.AppSettings("pathImm").ToString()
-		If Not pathLettura.EndsWith("\") Then
-			pathLettura &= "\"
-		End If
-		Dim pathScrittura As String = pathLettura & "Output\"
-		Dim gf As New GestioneFilesDirectory
-		Dim gi As New GestioneImmagini
-		gf.CreaDirectoryDaPercorso(pathScrittura)
-		gf.ScansionaDirectorySingola(pathLettura)
-		Dim filetti() As String = gf.RitornaFilesRilevati
-		Dim qfiletti As Integer = gf.RitornaQuantiFilesRilevati
-		For i As Integer = 1 To qfiletti
-			Dim nomeOutput As String = filetti(i)
-			nomeOutput = gf.TornaNomeFileDaPath(nomeOutput)
-			nomeOutput = pathScrittura & nomeOutput
-			gf.EliminaFileFisico(Server.MapPath(".") & "\Appoggio.png")
-			gi.Ridimensiona(gf, "NO", filetti(i), Server.MapPath(".") & "\Appoggio.png", 255, 255)
-			gi.RidimensionaEArrotondaIcona(gf, "NO", Server.MapPath(".") & "\Appoggio.png", nomeOutput)
-		Next
-		gf = Nothing
-	End Sub
+	'Protected Sub btnCOnverte_Click(sender As Object, e As EventArgs) Handles btnCOnverte.Click
+	'	'Dim pathLettura As String = System.Configuration.ConfigurationManager.AppSettings("pathImm").ToString()
+	'	'If Not pathLettura.EndsWith("\") Then
+	'	'	pathLettura &= "\"
+	'	'End If
+	'	'Dim pathScrittura As String = pathLettura & "Output\"
+	'	'Dim gf As New GestioneFilesDirectory
+	'	'Dim gi As New GestioneImmagini
+	'	'gf.CreaDirectoryDaPercorso(pathScrittura)
+	'	'gf.ScansionaDirectorySingola(pathLettura)
+	'	'Dim filetti() As String = gf.RitornaFilesRilevati
+	'	'Dim qfiletti As Integer = gf.RitornaQuantiFilesRilevati
+	'	'For i As Integer = 1 To qfiletti
+	'	'	Dim nomeOutput As String = filetti(i)
+	'	'	nomeOutput = gf.TornaNomeFileDaPath(nomeOutput)
+	'	'	nomeOutput = pathScrittura & nomeOutput
+	'	'	gf.EliminaFileFisico(Server.MapPath(".") & "\Appoggio.png")
+	'	'	gi.Ridimensiona(gf, "NO", filetti(i), Server.MapPath(".") & "\Appoggio.png", 255, 255)
+	'	'	gi.RidimensionaEArrotondaIcona(gf, "NO", Server.MapPath(".") & "\Appoggio.png", nomeOutput)
+	'	'Next
+	'	'gf = Nothing
+	'End Sub
 End Class

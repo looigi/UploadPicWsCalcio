@@ -12,22 +12,22 @@ Option Explicit On
 
 
 Partial Public Class _Default
-    
-    '''<summary>
-    '''Controllo form1.
-    '''</summary>
-    '''<remarks>
-    '''Campo generato automaticamente.
-    '''Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
-    '''</remarks>
-    Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
-    
-    '''<summary>
-    '''Controllo btnCOnverte.
-    '''</summary>
-    '''<remarks>
-    '''Campo generato automaticamente.
-    '''Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
-    '''</remarks>
-    Protected WithEvents btnCOnverte As Global.System.Web.UI.WebControls.Button
+
+	'''<summary>
+	'''Controllo form1.
+	'''</summary>
+	'''<remarks>
+	'''Campo generato automaticamente.
+	'''Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
+	'''</remarks>
+	Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
+
+	'''<summary>
+	'''Controllo txtRitorno.
+	'''</summary>
+	'''<remarks>
+	'''Campo generato automaticamente.
+	'''Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
+	'''</remarks>
+	Protected WithEvents txtRitorno As Global.System.Web.UI.WebControls.TextBox
 End Class

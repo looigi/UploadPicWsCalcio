@@ -9,7 +9,8 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        <asp:Button ID="btnCOnverte" runat="server" Text="Converte" />
+        <%--<asp:Button ID="btnCOnverte" runat="server" Text="Converte per Test" />--%>
+        <asp:TextBox ID="txtRitorno" runat="server"></asp:TextBox>
     </div>
     </form>
     
