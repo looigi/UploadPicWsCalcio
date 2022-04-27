@@ -63,8 +63,8 @@ Public Class _Default
 
 		Try
 			If ScriveLog = "SI" Then
-				gf.CreaDirectoryDaPercorso(FilePathLogs & "\")
-				gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\Log_" & NomeSquadra & ".txt")
+				gf.CreaDirectoryDaPercorso(FilePathLogs & "\UploadPic\")
+				gf.ApreFileDiTestoPerScrittura(FilePathLogs & "\UploadPic\Log_" & NomeSquadra & ".txt")
 			End If
 			Dim Cosa As String = Now & Chr(13) & Chr(10)
 			Cosa &= "---------------------------------" & Chr(13) & Chr(10)
@@ -75,6 +75,7 @@ Public Class _Default
 			Cosa &= "Cartella: " & vCartella & Chr(13) & Chr(10)
 			Cosa &= "Arrotonda: " & Arrotonda & Chr(13) & Chr(10)
 			Cosa &= "Nome Squadra: " & NomeSquadra & Chr(13) & Chr(10)
+
 			If ScriveLog = "SI" Then
 				gf.ScriveTestoSuFileAperto(RitornaDataOra() & Cosa)
 			End If
@@ -84,6 +85,7 @@ Public Class _Default
 
 			If MyFileCollection.Count > 0 Then
 				Dim NomeFile As String = ""
+
 				If Allegato = True Or Allegato = "True" Then
 					NomeFile = vTipologia & "_" & vCartella & "_" & NomeSquadra & "_" & vNomeFile
 				Else
@@ -91,7 +93,7 @@ Public Class _Default
 				End If
 
 				Dim Path As String = Server.MapPath(".") & "\Appoggio\" & NomeFile
-				If TipoDB <> "SQLSERVER" Then
+				If TipoPath <> "WINDOWS" Then
 					Path = Path.Replace("\", "/")
 					Path = Path.Replace("//", "/")
 					Path = Path.Replace("/\", "/")
@@ -168,7 +170,7 @@ Public Class _Default
 			'		' Dim gf As New GestioneFilesDirectory
 			'		gf.CreaDirectoryDaPercorso(gf.TornaNomeDirectoryDaPath(NomeFile) & "\")
 
-			'		If TipoDB <> "SQLSERVER" Then
+			'		If Tipopath <> "WINDOWS" Then
 			'			NomeFile = NomeFile.Replace("\", "/")
 			'			NomeFile = NomeFile.Replace("//", "/")
 			'		End If
@@ -187,7 +189,7 @@ Public Class _Default
 
 			'			Dim gi As New GestioneImmagini
 			'			Dim pathFile As String = gf.TornaNomeDirectoryDaPath(NomeFile)
-			'			If TipoDB <> "SQLSERVER" Then
+			'			If Tipopath <> "WINDOWS" Then
 			'				If Not pathFile.EndsWith("\") Then
 			'					pathFile &= "\"
 			'				End If
@@ -280,7 +282,7 @@ Public Class _Default
 			'		' ALLEGATO SI
 			'		If NomeSquadra = "Base" Then
 			'			Dim NomeAllegato As String = FilePathWS & "\Scheletri\" & vNomeFile
-			'			If TipoDB <> "SQLSERVER" Then
+			'			If Tipopath <> "WINDOWS" Then
 			'				NomeAllegato = NomeAllegato.Replace("\", "/")
 			'				NomeAllegato = NomeAllegato.Replace("//", "/")
 			'			End If
@@ -297,7 +299,7 @@ Public Class _Default
 			'			End If
 			'		Else
 			'			Dim NomeAllegato As String = FilePathAllegati & "\" & NomeSquadra & "\" & vTipologia & "\" & vCartella & "\" & vNomeFile
-			'			If TipoDB <> "SQLSERVER" Then
+			'			If Tipopath <> "WINDOWS" Then
 			'				NomeAllegato = NomeAllegato.Replace("\", "/")
 			'				NomeAllegato = NomeAllegato.Replace("//", "/")
 			'			End If

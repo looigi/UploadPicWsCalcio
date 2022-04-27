@@ -402,7 +402,7 @@ Public Class GestioneImmagini
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Ridimensiona 1... Path: " & Path)
 		End If
 
-		If TipoDB <> "SQLSERVER" Then
+		If Tipopath <> "WINDOWS" Then
 			Path = Path.Replace("\", "/")
 			Path = Path.Replace("//", "/")
 		End If
@@ -446,7 +446,7 @@ Public Class GestioneImmagini
 		Dim myEncoderParameter2 As New Imaging.EncoderParameter(myEncoder, 97)
 		myEncoderParameters2.Param(0) = myEncoderParameter2
 
-		If TipoDB <> "SQLSERVER" Then
+		If Tipopath <> "WINDOWS" Then
 			Path2 = Path2.Replace("\", "/")
 			Path2 = Path2.Replace("//", "/")
 		End If
@@ -544,7 +544,7 @@ Public Class GestioneImmagini
 		Dim originalX As Integer
 		Dim originalY As Integer
 
-		If TipoDB <> "SQLSERVER" Then
+		If TipoPath <> "WINDOWS" Then
 			PercorsoImmagine = PercorsoImmagine.Replace("\", "/")
 			PercorsoImmagine = PercorsoImmagine.Replace("//", "/")
 		End If
@@ -729,7 +729,7 @@ Public Class GestioneImmagini
 			gf.ScriveTestoSuFileAperto(RitornaDataOra() & "Arrotondo l'immagine. Arrotonda 10...")
 		End If
 
-		If TipoDB <> "SQLSERVER" Then
+		If TipoPATH <> "WINDOWS" Then
 			PercorsoOutput = PercorsoOutput.Replace("\", "/")
 			PercorsoOutput = PercorsoOutput.Replace("//", "/")
 		End If

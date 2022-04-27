@@ -1,5 +1,6 @@
 ﻿Module mdlGenerale
-	Public TipoDB As String = ""
+	Public TipoPATH As String = "WINDOWS"
+	Public TipoDB As String = "MARIADB"
 	Public Const ErroreConnessioneNonValida As String = "ERRORE: Stringa di connessione non valida"
 	Public Const ErroreConnessioneDBNonValida As String = "ERRORE: Connessione al db non valida"
 

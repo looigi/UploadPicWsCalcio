@@ -19,7 +19,7 @@ Public Class CriptaFiles
 		encrypt As Boolean) As String
 		Dim Ritorno As String = ""
 
-		If TipoDB <> "SQLSERVER" Then
+		If Tipopath <> "WINDOWS" Then
 			in_file = in_file.Replace("\", "/")
 			in_file = in_file.Replace("//", "/")
 

@@ -53,7 +53,7 @@ Public Class GestioneFilesDirectory
     End Sub
 
     Public Function TornaDimensioneFile(NomeFile As String) As Long
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -95,7 +95,7 @@ Public Class GestioneFilesDirectory
         Dim Contatore As Integer = 1
 
         Dim NomeFinale As String = NomeFileDestinazione & "_" & Format(Contatore, "0000") & Estensione
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFinale = NomeFinale.Replace("\", "/")
             NomeFinale = NomeFinale.Replace("//", "/")
         End If
@@ -112,7 +112,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function EliminaFileFisico(NomeFile As String) As String
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -139,7 +139,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function PrendeAttributiFile(NomeFile As String) As FileAttribute
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -155,7 +155,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Sub ImpostaAttributiFile(Filetto As String, Attributi As FileAttribute)
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Filetto = Filetto.Replace("\", "/")
             Filetto = Filetto.Replace("//", "/")
         End If
@@ -168,7 +168,7 @@ Public Class GestioneFilesDirectory
     Public Function CopiaFileFisico(NomeFileOrigine As String, NomeFileDestinazione As String, SovraScrittura As Boolean) As String
         Dim Ritorno As String = ""
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFileOrigine = NomeFileOrigine.Replace("\", "/")
             NomeFileOrigine = NomeFileOrigine.Replace("//", "/")
 
@@ -224,7 +224,7 @@ Public Class GestioneFilesDirectory
         Dim Ritorno As String = ""
         Dim Barra As String = "\"
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
             Barra = "/"
@@ -244,7 +244,7 @@ Public Class GestioneFilesDirectory
         Dim Ritorno As String = ""
         Dim Barra As String = "\"
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
             Barra = "/"
@@ -267,7 +267,7 @@ Public Class GestioneFilesDirectory
         Dim Ritorno As String = ""
         Dim Barra As String = "\"
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
             Barra = "/"
@@ -288,7 +288,7 @@ Public Class GestioneFilesDirectory
         Dim Ritorno As String = ""
         Dim Barra As String = "\"
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
             Barra = "/"
@@ -303,7 +303,7 @@ Public Class GestioneFilesDirectory
                 path = NomeFile
             End If
 
-            path = path.Replace(barra & barra, barra)
+            path = path.Replace(Barra & Barra, Barra)
 
             ' Create or overwrite the file.
             'Dim fs As FileStream = File.Create(path)
@@ -341,7 +341,7 @@ Public Class GestioneFilesDirectory
     Public Sub ApreFilePerLettura(NomeFile As String)
         Dim Barra As String = "\"
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
             Barra = "/"
@@ -359,7 +359,7 @@ Public Class GestioneFilesDirectory
     End Sub
 
     Public Function LeggeFileIntero(NomeFile As String) As String
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -382,7 +382,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function LeggeFileInteroSenzaVbCrLf(NomeFile As String) As String
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -420,7 +420,7 @@ Public Class GestioneFilesDirectory
     Dim Conta As Integer
 
     Private Sub LeggeTutto(Percorso As String, Filtro As String, lblAggiornamento As Label)
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
         End If
@@ -470,7 +470,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Sub LeggeFilesDaDirectory(Percorso As String, Optional Filtro As String = "")
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
         End If
@@ -511,7 +511,7 @@ Public Class GestioneFilesDirectory
     Public Sub CreaDirectoryDaPercorso(Percorso As String)
         Dim Ritorno As String = Percorso
 
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Ritorno = Ritorno.Replace("\", "/")
             Ritorno = Ritorno.Replace("//", "/")
 
@@ -594,7 +594,7 @@ Public Class GestioneFilesDirectory
     End Sub
 
     Public Function TornaDataDiCreazione(NomeFile As String) As Date
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -608,7 +608,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function TornaDataDiUltimaModifica(NomeFile As String) As Date
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -622,7 +622,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function TornaDataUltimoAccesso(NomeFile As String) As Date
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
         End If
@@ -638,7 +638,7 @@ Public Class GestioneFilesDirectory
     Private outputFile As StreamWriter
 
     Public Function EsisteFile(NomeFile As String) As Boolean
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFile = NomeFile.Replace("\", "/")
             NomeFile = NomeFile.Replace("//", "/")
             NomeFile = NomeFile.Replace("/\", "/")
@@ -652,7 +652,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Function RinominaFile(NomeFileOrigine As String, NomeFileDestinazione As String) As String
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             NomeFileOrigine = NomeFileOrigine.Replace("\", "/")
             NomeFileOrigine = NomeFileOrigine.Replace("//", "/")
             NomeFileOrigine = NomeFileOrigine.Replace("/\", "/")
@@ -684,7 +684,7 @@ Public Class GestioneFilesDirectory
     End Function
 
     Public Sub ApreFileDiTestoPerScrittura(Percorso As String)
-        If TipoDB <> "SQLSERVER" Then
+        If Tipopath <> "WINDOWS" Then
             Percorso = Percorso.Replace("\", "/")
             Percorso = Percorso.Replace("//", "/")
         End If
